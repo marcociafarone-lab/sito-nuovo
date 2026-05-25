@@ -1,15 +1,39 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+<link rel="icon" type="image/png" href="/logo_2.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="CONROI — che altro. Tavolo da lavoro interattivo. Rullino analogico e sequenza generativa di disegni e bozzetti in bit.">
 <title>CONROI — che altro</title>
+
+<!-- DATI STRUTTURATI: SPIEGA A GOOGLE L'ESISTENZA DELLA GALLERIA INTERATTIVA D'ARTISTA -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemPage",
+  "name": "che altro",
+  "description": "Tavolo da lavoro interattivo dell'artista CONROI. Sviluppo generativo di disegni d'archivio tramite rullino analogico.",
+  "mainEntity": {
+    "@type": "ImageGallery",
+    "name": "Archivio Disegni CONROI",
+    "description": "Matrice di 20 disegni interattivi adagiati su tavolo digitale.",
+    "creator": {
+      "@type": "MusicGroup",
+      "name": "CONROI",
+      "url": "https://con-roi.com"
+    }
+  }
+}
+</script>
+
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html, body {
     width: 100%; height: 100%;
     overflow: hidden;
+    background: #000; /* Forzato sfondo nero iniziale */
     font-family: 'Courier New', monospace;
     user-select: none;
   }
@@ -21,26 +45,29 @@
     overflow-y: auto;
     overflow-x: hidden;
     border-right: 1px solid rgba(255,255,255,0.15);
-    background: rgba(0,0,0,0.08);
+    background: rgba(0,0,0,0.4); /* Reso leggermente più scuro per staccare dal tavolo */
     padding: 12px 8px;
     scrollbar-width: none;
     z-index: 10;
   }
   #rullino::-webkit-scrollbar { display: none; }
+  
   #rullino img {
     display: block;
     width: 100%; height: auto;
     margin-bottom: 10px;
     cursor: pointer;
-    opacity: 0.5;
+    opacity: 0.4; /* Abbassata l'opacità per aumentare l'effetto mistero in ombra */
     filter: grayscale(1);
     transition: opacity 0.3s, filter 0.3s;
+    image-rendering: -webkit-optimize-contrast;
   }
   #rullino img:hover { opacity: 1; filter: grayscale(0); }
 
   #tavolo {
     position: fixed;
     left: 0; top: 0; right: 0; bottom: 0;
+    background-color: #000; /* Evita flash chiari durante il caricamento della foto */
     background-image: url('tavolo.jpg');
     background-size: cover;
     background-position: center;
@@ -58,8 +85,10 @@
   .foglio img {
     display: block;
     pointer-events: none;
+    image-rendering: -webkit-optimize-contrast;
   }
 
+  /* --- MENU CRONOLOGICO AGGIORNATO E CORRETTO --- */
   nav {
     position: fixed;
     bottom: 20px;
@@ -69,9 +98,11 @@
     letter-spacing: 0.2em;
     line-height: 2.2;
   }
-  nav a { display: block; color: rgba(255,255,255,0.45); text-decoration: none; }
-  nav a:hover { color: rgba(255,255,255,0.9); }
+  nav a { display: block; color: rgba(255,255,255,0.35); text-decoration: none; margin-bottom: 4px; }
+  nav a.corrente { color: rgba(255,255,255,0.12); pointer-events: none; }
+  nav a:hover { color: rgba(255,255,255,0.8); }
 
+  /* RESPONSIVE PER SMARTPHONE PERFETTO TRA L'OSCURITÀ */
   @media (max-width: 700px) and (orientation: portrait) {
     #rullino {
       left: 0; right: 0; top: auto; bottom: 0;
@@ -80,10 +111,14 @@
       display: flex; flex-direction: row;
       align-items: center; gap: 10px;
       padding: 0 12px;
-      border-right: none; border-top: 1px solid #e0e0e0;
+      border-right: none; 
+      border-top: 1px solid rgba(255,255,255,0.15); /* CORRETTA: tolto il bianco, ora è una linea scura e fusa nell'ombra */
+      background: rgba(0,0,0,0.6);
     }
     #rullino img { width: auto; height: 75px; margin-bottom: 0; flex-shrink: 0; }
     #tavolo { left: 0; bottom: 110px; }
+    
+    /* Spostamento millimetrico del menu sopra il rullino mobile per non coprire i comandi */
     nav { left: 20px; bottom: 130px; }
   }
 </style>
@@ -93,6 +128,7 @@
 <div id="rullino"></div>
 <div id="tavolo"></div>
 
+<!-- NAV UNIFORMATA IN MODO SPECULARE AL RESTO DELL'ECOSISTEMA -->
 <nav>
   <a href="/surfaces">surfaces</a>
   <br>
@@ -100,6 +136,7 @@
   <a href="/blues-rosa">blues rosa</a>
   <a href="/conroi">CONROI</a>
   <a href="/matrice">matrice</a>
+  <a class="corrente" href="/che-altro">che altro</a>
 </nav>
 
 <script>
