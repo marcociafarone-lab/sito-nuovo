@@ -35,12 +35,17 @@
     justify-content: center;
     overflow: hidden;
   }
-  canvas {
+    canvas {
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     cursor: pointer;
     display: block;
+    
+    /* RIMUOVE L'HIGHLIGHT CELESTE SU MOBILE */
+    -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+    -webkit-tap-highlight-color: transparent !important;
   }
+
   .margine {
     position: fixed;
     font-family: 'Courier New', Courier, monospace;
