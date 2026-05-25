@@ -5,70 +5,135 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CONROI — bitless</title>
+
+<!-- DATI STRUTTURATI: CERTIFICAZIONE VIDEO UFFICIALE CON ISRC PER GOOGLE -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "CONROI — bitless (Official Video)",
+  "description": "Music video for Bitless by CONROI. Cinematic audio format 1:2.35. Master audio execution.",
+  "thumbnailUrl": "https://con-roi.com",
+  "uploadDate": "2026-05-25",
+  "contentUrl": "https://google.com",
+  "embedUrl": "https://con-roi.com",
+  "duration": "PT6M00S", 
+  "isrcCode": "ITYDF2600002",
+  "actor": {
+    "@type": "MusicGroup",
+    "name": "CONROI",
+    "url": "https://con-roi.com"
+  },
+  "recordingOf": {
+    "@type": "MusicRecording",
+    "name": "Bitless"
+  }
+}
+</script>
+
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  
   html, body {
     background: #000;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
   }
+  
   #video-wrap {
     position: fixed;
     inset: 0;
     z-index: 1;
   }
-  #video-wrap iframe {
+  
+  /* Tag video nativo a tutto schermo, mantiene le proporzioni e riempie lo schermo creando le bande nere */
+  #video-wrap video {
     width: 100%;
     height: 100%;
-    border: none;
+    object-fit: cover; 
     display: block;
   }
-  #overlay {
+  
+  /* VELO DI INGRESSO (GATE AUDIO) */
+  #audio-gate {
     position: fixed;
     inset: 0;
-    z-index: 2;
-    pointer-events: none;
+    background: #000;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 1.5s ease;
+    -webkit-tap-highlight-color: transparent !important; /* Blocca il flash celeste al tocco */
   }
-  #superfici {
-  position: fixed;
-  top: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  font-family: 'Courier New', monospace;
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  color: rgba(255,255,255,0);
-  line-height: 1;
-  text-align: center;
-  pointer-events: all;
-  transition: color 1.2s;
-  white-space: nowrap;
-}
+  
+  #audio-gate-text {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    line-height: 1.6;
+    padding: 0 20px;
+    user-select: none;
+  }
 
-#superfici a {
-  display: inline;
-  color: inherit;
-  text-decoration: none;
-  margin: 0 12px;
-}
+  /* MENU ANCORATO IN MODO FLUIDO DENTRO LA BANDA NERA SUPERIORE */
+  #superfici {
+    position: fixed;
+    top: 24px; 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0);
+    line-height: 1.5;
+    text-align: center;
+    pointer-events: all;
+    transition: color 1.2s;
+    width: 90%;
+    max-width: 600px;
+  }
+
+  #superfici a {
+    display: inline-block; /* Permette al menu di incolonnarsi in modo pulito su mobile */
+    color: inherit;
+    text-decoration: none;
+    margin: 4px 10px;
+    -webkit-tap-highlight-color: transparent !important;
+  }
   #superfici a:hover { color: rgba(255,255,255,0.7) !important; }
   #superfici.visible { color: rgba(255,255,255,0.35); }
+
+  /* COMPATTAZIONE DEL MENU SU SCHERMI STRETTI (PORTRAIT MOBILE) */
+  @media (max-width: 480px) {
+    #superfici {
+      top: 15px; /* Alza millimetricamente i link per tenerli dentro la banda nera stretta dello smartphone */
+    }
+    #superfici a {
+      margin: 3px 6px; /* Stringe lo spazio di tocco per evitare accavallamenti o tagli ai bordi */
+    }
+  }
 </style>
 </head>
 <body>
 
-<div id="video-wrap">
-  <iframe
-    id="yt"
-    src="https://www.youtube.com/embed/vjh_DcWayGQ?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1&enablejsapi=1"
-    allow="autoplay; fullscreen"
-    allowfullscreen>
-  </iframe>
+<!-- Velo d'ingresso minimale che azzera i blocchi audio dei browser mobile -->
+<div id="audio-gate">
+  <div id="audio-gate-text">[ cinematic audio — headphones recommended ]</div>
 </div>
 
-<div id="overlay"></div>
+<div id="video-wrap">
+  <!-- Lettore nativo HTML5 con streaming diretto e puro da Google Drive -->
+  <video id="my-video" playsinline>
+    <source src="https://google.com" type="video/mp4">
+    Il tuo browser non supporta i video.
+  </video>
+</div>
 
 <div id="superfici">
   <a href="/dieci">10"</a>
@@ -80,10 +145,23 @@
 </div>
 
 <script>
-  const titolo = document.getElementById('titolo');
+  const gate = document.getElementById('audio-gate');
+  const video = document.getElementById('my-video');
   const superfici = document.getElementById('superfici');
 
-  setTimeout(() => { superfici.classList.add('visible'); }, 6000);
+  gate.addEventListener('click', () => {
+    // 1. Scompare il velo nero all'interazione dell'utente
+    gate.style.opacity = '0';
+    setTimeout(() => { gate.style.display = 'none'; }, 1500);
+
+    // 2. Il video master parte con l'audio sbloccato al massimo della fedeltà
+    video.play();
+
+    // 3. Il timer fa apparire i link in dissolvenza 6 secondi dopo l'ingresso
+    setTimeout(() => { 
+      superfici.classList.add('visible'); 
+    }, 6000);
+  });
 </script>
 </body>
 </html>
