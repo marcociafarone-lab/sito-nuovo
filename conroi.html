@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<link rel="icon" type="image/png" href="/logo_2.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONROI</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html, body {
+    background: #1a2a35 url('BG.jpg') center/cover fixed;
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  html::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .sequenza, .didascalia, .fine {
+    position: relative;
+    z-index: 1;
+  }
+
+  .sequenza { width: 100%; }
+
+  .foto {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12vh 0;
+  }
+
+  .foto img {
+    max-width: 82%;
+    max-height: 88vh;
+    object-fit: contain;
+    display: block;
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  .foto.stretta img { max-width: 55%; }
+
+  .foto img.framed {
+    border: 2px solid #fff;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+
+  .didascalia {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 3vh 32px 3vh;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    line-height: 2.2;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* --- MENU CRONOLOGICO IN BASSO UNIFORMATO --- */
+  .fine {
+    height: 40vh;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 0 32px 32px;
+  }
+
+  .fine span {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.35);
+    line-height: 2.2;
+  }
+
+  .fine a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Stato della pagina corrente per sfondo scuro texturizzato */
+  .fine a.corrente {
+    color: rgba(255,255,255,0.15);
+    pointer-events: none;
+  }
+
+  .fine a:hover { color: rgba(255,255,255,0.8); }
+
+  /* Adattamento Mobile Primitivo */
+  @media (max-width: 480px) {
+    .foto {
+      height: auto !important;
+      min-height: auto !important;
+      padding: 40px 20px !important;
+    }
+
+    .foto img, .foto.stretta img { 
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="sequenza">
+  <div class="foto stretta">
+    <img src="DJ2.jpg" alt="CONROI — dettaglio">
+  </div>
+  <div class="foto">
+    <img src="CONROI-photo.jpg" alt="CONROI — ritratto">
+  </div>
+  <div class="foto">
+    <img src="DP1.jpg" alt="CONROI — retro" class="framed">
+  </div>
+  
+  <div class="didascalia">
+    CONROI<br>
+    self-titled<br>
+    2022<br>
+    <br>
+    chitarra elettrica, acustica<br>
+    pianoforte, voce
+  </div>
+</div>
+
+<!-- MENU UNIFORMATO SPECULARE -->
+<div class="fine">
+  <span>
+    <a href="/dieci">10"</a>
+    <a href="/blues-rosa">blues rosa</a>
+    <a class="corrente" href="/conroi">CONROI</a>
+    <br>
+    <a href="/matrice">matrice</a>
+    <a href="/che-altro">che altro</a>
+    <br>
+    <a href="/surfaces">surfaces</a>
+  </span>
+</div>
+
+</body>
+</html>

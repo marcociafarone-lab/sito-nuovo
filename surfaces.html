@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <link rel="icon" type="image/png" href="/logo_2.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONROI — surfaces</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  #superficie {
+    position: fixed;
+    inset: 0;
+    background-image: url('surface.jpg');
+    background-size: cover;
+    background-position: left center;
+  }
+
+  #simbolo {
+    position: fixed;
+    left: 44%;
+    bottom: 12%;
+    z-index: 5;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    opacity: 0.12;
+  }
+
+  #links {
+    position: fixed;
+    right: 3.5%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    line-height: 2.8;
+    text-align: left;
+  }
+
+  #links a {
+    display: block;
+    color: rgba(0,0,0,0.55);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  #links a:hover { color: rgba(0,0,0,0.95); }
+
+  #links .esterni {
+    margin-top: 2.5em;
+    line-height: 2.4;
+  }
+
+  #links .esterni a { color: rgba(0,0,0,0.35); }
+  #links .esterni a:hover { color: rgba(0,0,0,0.75); }
+
+  @media (max-width: 700px) and (orientation: portrait) {
+    #superficie { background-position: top center; background-size: auto 100%; }
+    #simbolo { left: 55%; bottom: 30%; }
+    #links {
+      right: auto; top: auto; bottom: 5%;
+      left: 50%; transform: translateX(-50%);
+      text-align: center; line-height: 2;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="superficie"></div>
+
+<canvas id="simbolo" width="160" height="160"></canvas>
+
+<div id="links">
+  <a href="/dieci">10"</a>
+  <a href="/blues-rosa">blues rosa</a>
+  <a href="/conroi">CONROI</a>
+  <a href="/matrice">matrice</a>
+  <a href="/che-altro">che altro</a>
+  <div class="esterni">
+    <a href="https://conroi.bandcamp.com/" target="_blank">bandcamp</a>
+    <a href="https://open.spotify.com/intl-it/artist/1R9LpWhWU94CiymCzesOsK?si=2f56390f9c304f6e" target="_blank">spotify</a>
+    <a href="mailto:conroi@outlook.it">conroi@outlook.it</a>
+  </div>
+</div>
+
+<script>
+const data = `
+000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000
+001111111111111111111111111111111111111100
+001111111111111111111111111111111111111100
+001100000000000000000000000000000000000000
+001100000000000000000000000000000000000000
+001100111111111111111111111111111111111100
+001100111111111111111111111111111111111100
+001100110000000000000000000000000000001100
+001100110000000000000000000000000000001100
+001100110011111111111111111111111111001100
+001100110011111111111111111111111111001100
+001100110011000000000000000000000011001100
+001100110011000000000000000000000011001100
+001100110011001111111111111111110011001100
+001100110011001111111111111111110011001100
+001100110011001100000000000000000011001100
+001100110011001100000000000000000011001100
+001100110011001100111111111111110011001100
+001100110011001100111111111111110011001100
+001100110011001100110000000000110011001100
+001100110011001100110000000000110011001100
+001100110011001100110000110000110011001100
+001100110011001100110000110000110011001100
+001100110011001100110000110000110011001100
+001100110011001100110000110000110011001100
+001100110011001100110000110000110011001100
+001100110011001100110000110000110011001100
+001100110011001100110000000000110011001100
+001100110011001100110000000000110011001100
+001100110011001100111111111111110011001100
+001100110011001100111111111111110011001100
+001100110000000000000000000000000000001100
+001100110000000000000000000000000000001100
+001100111111111111111111111111111111111100
+001100111111111111111111111111111111111100
+001100000000000000000000000000000000000000
+001100000000000000000000000000000000000000
+001111111111111111111111111111111111111100
+001111111111111111111111111111111111111100
+000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000`.trim().split('\n');
+
+const rows = data.length;
+const cols = data[0].length;
+const canvas = document.getElementById('simbolo');
+const ctx = canvas.getContext('2d');
+const SCALE = Math.floor(Math.min(160 / cols, 160 / rows));
+canvas.width = cols * SCALE;
+canvas.height = rows * SCALE;
+
+ctx.fillStyle = '#ffffff';
+for (let r = 0; r < rows; r++) {
+  for (let c = 0; c < cols; c++) {
+    if (data[r][c] === '1') {
+      ctx.fillRect(c * SCALE, r * SCALE, SCALE, SCALE);
+    }
+  }
+}
+</script>
+</body>
+</html>

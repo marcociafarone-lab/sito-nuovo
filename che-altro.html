@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CONROI — che altro</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+    user-select: none;
+  }
+
+  #rullino {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 120px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.08);
+    padding: 12px 8px;
+    scrollbar-width: none;
+    z-index: 10;
+  }
+  #rullino::-webkit-scrollbar { display: none; }
+  #rullino img {
+    display: block;
+    width: 100%; height: auto;
+    margin-bottom: 10px;
+    cursor: pointer;
+    opacity: 0.5;
+    filter: grayscale(1);
+    transition: opacity 0.3s, filter 0.3s;
+  }
+  #rullino img:hover { opacity: 1; filter: grayscale(0); }
+
+  #tavolo {
+    position: fixed;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-image: url('tavolo.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .foglio {
+    position: absolute;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    cursor: pointer;
+    transition: opacity 0.35s;
+    left: 50%; top: 50%;
+  }
+  .foglio img {
+    display: block;
+    pointer-events: none;
+  }
+
+  nav {
+    position: fixed;
+    bottom: 20px;
+    left: 140px;
+    z-index: 20;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    line-height: 2.2;
+  }
+  nav a { display: block; color: rgba(255,255,255,0.45); text-decoration: none; }
+  nav a:hover { color: rgba(255,255,255,0.9); }
+
+  @media (max-width: 700px) and (orientation: portrait) {
+    #rullino {
+      left: 0; right: 0; top: auto; bottom: 0;
+      width: 100%; height: 110px;
+      overflow-x: auto; overflow-y: hidden;
+      display: flex; flex-direction: row;
+      align-items: center; gap: 10px;
+      padding: 0 12px;
+      border-right: none; border-top: 1px solid #e0e0e0;
+    }
+    #rullino img { width: auto; height: 75px; margin-bottom: 0; flex-shrink: 0; }
+    #tavolo { left: 0; bottom: 110px; }
+    nav { left: 20px; bottom: 130px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="rullino"></div>
+<div id="tavolo"></div>
+
+<nav>
+  <a href="/surfaces">surfaces</a>
+  <br>
+  <a href="/dieci">10"</a>
+  <a href="/blues-rosa">blues rosa</a>
+  <a href="/conroi">CONROI</a>
+  <a href="/matrice">matrice</a>
+</nav>
+
+<script>
+const TOTALE = 20;
+
+const rullino = document.getElementById('rullino');
+const tavolo  = document.getElementById('tavolo');
+
+function mettiSulTavolo(src) {
+  tavolo.querySelectorAll('.foglio').forEach(f => {
+    if (f.dataset.src === src) { f.remove(); }
+  });
+
+  const img = new Image();
+  img.onload = () => {
+    const tw = tavolo.offsetWidth;
+    const th = tavolo.offsetHeight;
+
+    const lato = Math.min(tw, th) * 0.82;
+    const ratio = img.naturalWidth / img.naturalHeight;
+    let iw, ih;
+    if (ratio >= 1) { iw = lato; ih = lato / ratio; }
+    else            { ih = lato; iw = lato * ratio; }
+
+    const pad = 10;
+    const rot = (Math.random() - 0.5) * 7;
+    const dx  = (Math.random() - 0.5) * tw * 0.15;
+    const dy  = (Math.random() - 0.5) * th * 0.15;
+
+    const foglio = document.createElement('div');
+    foglio.className = 'foglio';
+    foglio.dataset.src = src;
+    foglio.style.cssText = `
+      width: ${iw + pad*2}px;
+      height: ${ih + pad*2}px;
+      transform: translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(${rot}deg);
+      opacity: 0;
+    `;
+
+    img.style.cssText = `width:${iw}px; height:${ih}px;`;
+    foglio.appendChild(img);
+    tavolo.appendChild(foglio);
+
+    requestAnimationFrame(() => { foglio.style.opacity = '1'; });
+
+    foglio.onclick = () => {
+      foglio.style.opacity = '0';
+      setTimeout(() => foglio.remove(), 380);
+    };
+  };
+  img.src = src;
+}
+
+for (let i = TOTALE; i >= 1; i--) {
+  const thumb = document.createElement('img');
+  thumb.src = `disegni/${i}.jpg`;
+  thumb.onerror = () => thumb.remove();
+  thumb.onclick = () => mettiSulTavolo(thumb.src);
+  rullino.appendChild(thumb);
+}
+</script>
+</body>
+</html>

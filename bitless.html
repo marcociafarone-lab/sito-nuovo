@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <link rel="icon" type="image/png" href="/logo_2.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONROI — bitless</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #000;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  #video-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+  }
+  #video-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+  #overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+  #superfici {
+  position: fixed;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0);
+  line-height: 1;
+  text-align: center;
+  pointer-events: all;
+  transition: color 1.2s;
+  white-space: nowrap;
+}
+
+#superfici a {
+  display: inline;
+  color: inherit;
+  text-decoration: none;
+  margin: 0 12px;
+}
+  #superfici a:hover { color: rgba(255,255,255,0.7) !important; }
+  #superfici.visible { color: rgba(255,255,255,0.35); }
+</style>
+</head>
+<body>
+
+<div id="video-wrap">
+  <iframe
+    id="yt"
+    src="https://www.youtube.com/embed/vjh_DcWayGQ?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1&enablejsapi=1"
+    allow="autoplay; fullscreen"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<div id="overlay"></div>
+
+<div id="superfici">
+  <a href="/dieci">10"</a>
+  <a href="/blues-rosa">blues rosa</a>
+  <a href="/conroi">CONROI</a>
+  <a href="/matrice">matrice</a>
+  <a href="/che-altro">che altro</a>
+  <a href="/surfaces">surfaces</a>
+</div>
+
+<script>
+  const titolo = document.getElementById('titolo');
+  const superfici = document.getElementById('superfici');
+
+  setTimeout(() => { superfici.classList.add('visible'); }, 6000);
+</script>
+</body>
+</html>
