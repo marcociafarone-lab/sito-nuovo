@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CONROI — bitless</title>
 
+<!-- DATI STRUTTURATI CON ISRC PER GOOGLE -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -44,27 +45,23 @@
     inset: 0;
     z-index: 1;
     background: #000;
-    pointer-events: none;
+    overflow: hidden;
+    pointer-events: none; /* Impedisce di cliccare sul video e far apparire i controlli */
   }
   
+  /* L'IFRAME MOSTRA IL FORMATO CORRETTO MA NASCONDE I LOGHI AI BORDI */
   #video-wrap iframe {
     position: absolute;
     top: 50%;
     left: 50%;
     width: 100vw;
     height: 56.25vw;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(1.08); /* Ingrandimento minimo mirato solo per spingere i controlli fuori dal visibile */
     border: none;
     display: block;
   }
-
-  @media (max-width: 700px) and (orientation: portrait) {
-    #video-wrap iframe {
-      width: 100vw !important;
-      height: 56.25vw !important;
-    }
-  }
   
+  /* VELO DI INGRESSO (GATE AUDIO) */
   #audio-gate {
     position: fixed;
     inset: 0;
@@ -89,6 +86,7 @@
     user-select: none;
   }
 
+  /* MENU NELLA BANDA NERA SUPERIORE */
   #superfici {
     position: fixed;
     top: 24px; 
@@ -120,6 +118,11 @@
   @media (max-width: 480px) {
     #superfici { top: 15px; }
     #superfici a { margin: 3px 6px; }
+    #video-wrap iframe {
+      width: 100vw !important;
+      height: 56.25vw !important;
+      transform: translate(-50%, -50%) scale(1.12) !important; /* Ottimizzato per display stretti */
+    }
   }
 </style>
 </head>
@@ -130,7 +133,13 @@
 </div>
 
 <div id="video-wrap">
-  <div id="player"></div>
+  <!-- L'iFrame rinasce puro con i comandi di riproduzione audio e loop integrati direttamente nell'URL -->
+  <iframe
+    id="yt-player"
+    src="https://youtube.com"
+    allow="autoplay; fullscreen"
+    allowfullscreen>
+  </iframe>
 </div>
 
 <div id="superfici">
@@ -143,56 +152,21 @@
 </div>
 
 <script>
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-  var player;
-  var isPlayerReady = false;
-
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-      videoId: 'vjh_DcWayGQ', 
-      playerVars: {
-        'autoplay': 1,
-        'mute': 1, 
-        'controls': 0,
-        'rel': 0,
-        'showinfo': 0,
-        'loop': 1,
-        'modestbranding': 1,
-        'iv_load_policy': 3,
-        'cc_load_policy': 0,
-        'autohide': 1,
-        'playlist': 'vjh_DcWayGQ'
-      },
-      events: {
-        'onReady': onPlayerReady
-      }
-    });
-  }
-
-  function onPlayerReady(event) {
-    isPlayerReady = true;
-  }
-
   const gate = document.getElementById('audio-gate');
   const superfici = document.getElementById('superfici');
+  const iframe = document.getElementById('yt-player');
 
   gate.addEventListener('click', () => {
+    // 1. Il velo nero si dissolve al tocco
     gate.style.opacity = '0';
-    setTimeout(() => { 
-      gate.style.display = 'none'; 
-    }, 1500);
+    setTimeout(() => { gate.style.display = 'none'; }, 1500);
 
-    if (isPlayerReady && player) {
-      player.unMute();
-      player.setVolume(100);
-      player.seekTo(0);
-      player.playVideo();
-    }
+    // 2. Comanda l'avvio del video con l'audio attivo tramite un messaggio post diretto a YouTube
+    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+    iframe.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', '*');
 
+    // 3. Il menu compare dopo 3 secondi
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
