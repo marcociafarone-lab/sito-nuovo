@@ -45,18 +45,16 @@
     inset: 0;
     z-index: 1;
     background: #000;
-    overflow: hidden;
   }
   
-  /* L'IFRAME SFRUTTA LE BANDE NERE NATIVE DEL TUO FORMATO 1:2.35 */
-  /* Lo scale spinge i controlli fuori dai bordi del monitor senza intaccare il quadro visivo centrale */
+  /* L'IFRAME MANTIENE IL TUO FORMATO 1:2.35 INTERO SENZA CROP */
   #video-wrap iframe {
     position: absolute;
     top: 50%;
     left: 50%;
     width: 100vw;
     height: 56.25vw;
-    transform: translate(-50%, -50%) scale(1.08);
+    transform: translate(-50%, -50%);
     border: none;
     display: block;
   }
@@ -121,20 +119,19 @@
     #video-wrap iframe {
       width: 100vw !important;
       height: 56.25vw !important;
-      transform: translate(-50%, -50%) scale(1.12) !important;
+      transform: translate(-50%, -50%) !important;
     }
   }
 </style>
 </head>
 <body>
 
-<!-- L'avviso per le cuffie coerente e minimale -->
 <div id="audio-gate">
   <div id="audio-gate-text">[ cinematic audio — headphones recommended ]</div>
 </div>
 
 <div id="video-wrap">
-  <!-- Iframe pulito con autoplay attivo, suono sbloccato e playlist per il loop automatico -->
+  <!-- URL di YouTube semplificato al massimo, pulito dai codici che generavano il blocco 1014 -->
   <iframe
     id="yt-player"
     src="https://youtube.com"
@@ -157,11 +154,11 @@
   const superfici = document.getElementById('superfici');
 
   gate.addEventListener('click', () => {
-    // Il velo si dissolve all'interazione reale dell'utente, rivelando l'opera e l'audio attivi sotto
+    // Il velo si dissolve rivelando l'iFrame stabile
     gate.style.opacity = '0';
     setTimeout(() => { gate.style.display = 'none'; }, 1500);
 
-    // Fa apparire i link del menu dopo 3 secondi nella banda nera
+    // Il menu compare dopo 3 secondi nella banda nera
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
