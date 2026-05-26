@@ -55,12 +55,8 @@
   const superfici = document.getElementById('superfici');
   const video = document.getElementById('main-video');
 
-  video.load();
-
   gate.addEventListener('click', () => {
-    video.play().catch(error => {
-      console.log("Riproduzione bloccata:", error);
-    });
+    video.play();
     gate.style.opacity = '0';
     setTimeout(() => { gate.style.display = 'none'; }, 1500);
     setTimeout(() => { superfici.classList.add('visible'); }, 3000);
