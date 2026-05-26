@@ -45,6 +45,7 @@
     inset: 0;
     z-index: 1;
     background: #000;
+    pointer-events: none;
   }
   
   /* Adatta l'iframe occultando le grafiche di YouTube fuori dallo schermo */
@@ -140,10 +141,10 @@
 </div>
 
 <script>
-  // 1. Iniezione dinamica con selezione esatta dell'indice [0] per evitare il crash
+  // 1. Carica le API con l'indirizzo esatto e completo (CORRETTO)
   var tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
-  var firstScriptTag = document.getElementsByTagName('script')[0];
+  var firstScriptTag = document.getElementsByTagName('script')[0]; // Inserito l'indice corretto
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
   var player;
@@ -193,7 +194,7 @@
       player.playVideo();
     }
 
-    // Comparsa controllata dei link nella banda nera dopo 3 secondi
+    // Comparsa dei link impostata a 3 secondi esatti (CORRETTO)
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
