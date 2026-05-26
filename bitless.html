@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CONROI — bitless</title>
 
-<!-- DATI STRUTTURATI: CERTIFICAZIONE VIDEO UFFICIALE CON ISRC PER GOOGLE -->
+<!-- DATI STRUTTURATI CON ISRC PER GOOGLE -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -15,7 +15,6 @@
   "description": "Music video for Bitless by CONROI. Cinematic audio format 1:2.35. Master audio execution.",
   "thumbnailUrl": "https://con-roi.com",
   "uploadDate": "2026-05-25",
-  "contentUrl": "https://google.com",
   "embedUrl": "https://con-roi.com",
   "duration": "PT6M00S", 
   "isrcCode": "ITYDF2600002",
@@ -46,14 +45,20 @@
     inset: 0;
     z-index: 1;
     background: #000;
+    pointer-events: none; /* Impedisce all'utente di cliccare sul video e vedere i tasti di YouTube */
   }
   
-  /* Adatta l'iframe di Google Drive a tutto schermo occultando i bordi */
+  /* Ingrandisce leggermente l'iframe per occultare i loghi di YouTube fuori dallo schermo */
   #video-wrap iframe {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 56.25vw;
+    min-height: 100vh;
+    min-width: 177.77vh;
+    transform: translate(-50%, -50%) scale(1.1);
     border: none;
-    display: block;
   }
   
   /* VELO DI INGRESSO (GATE AUDIO) */
@@ -81,7 +86,7 @@
     user-select: none;
   }
 
-  /* MENU ANCORATO IN MODO FLUIDO DENTRO LA BANDA NERA SUPERIORE */
+  /* MENU NELLA BANDA NERA SUPERIORE */
   #superfici {
     position: fixed;
     top: 24px; 
@@ -111,30 +116,21 @@
   #superfici.visible { color: rgba(255,255,255,0.35); }
 
   @media (max-width: 480px) {
-    #superfici {
-      top: 15px;
-    }
-    #superfici a {
-      margin: 3px 6px;
-    }
+    #superfici { top: 15px; }
+    #superfici a { margin: 3px 6px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Velo d'ingresso minimale con l'alert per le cuffie -->
+<!-- L'avviso per le cuffie che sblocca il suono -->
 <div id="audio-gate">
   <div id="audio-gate-text">[ cinematic audio — headphones recommended ]</div>
 </div>
 
 <div id="video-wrap">
-  <!-- Sostituito con l'iframe ufficiale di streaming autorizzato da Google Drive -->
-  <iframe 
-    id="drive-video"
-    src="https://google.com" 
-    allow="autoplay; fullscreen" 
-    allowfullscreen>
-  </iframe>
+  <!-- Il tag in cui JavaScript inietterà il player di YouTube -->
+  <div id="player"></div>
 </div>
 
 <div id="superfici">
@@ -147,19 +143,57 @@
 </div>
 
 <script>
-  const gate = document.getElementById('audio-gate');
-  const superfici = document.getElementById('superfici');
+  // 1. Carica le API ufficiali di YouTube in background
+  var tag = document.createElement('script');
+  tag.src = "https://youtube.com";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-  gate.addEventListener('click', () => {
-    // Scompare il velo nero all'interazione dell'utente
-    gate.style.opacity = '0';
-    setTimeout(() => { gate.style.display = 'none'; }, 1500);
+  var player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      // SOSTITUISCI QUESTA STRINGA CON L'ID DEL TUO VIDEO DI YOUTUBE
+      videoId: 'vjh_DcWayGQ', 
+      playerVars: {
+        'autoplay': 1,
+        'mute': 1, // Parte muto dietro il velo per aggirare i blocchi dei browser
+        'controls': 0,
+        'rel': 0,
+        'showinfo': 0,
+        'loop': 1,
+        'modestbranding': 1,
+        'iv_load_policy': 3,
+        'cc_load_policy': 0,
+        'autohide': 1
+      },
+      events: {
+        'onReady': onPlayerReady
+      }
+    });
+  }
 
-    // Il timer fa apparire i link del menu in dissolvenza 6 secondi dopo l'ingresso
-    setTimeout(() => { 
-      superfici.classList.add('visible'); 
-    }, 6000);
-  });
+  function onPlayerReady(event) {
+    // Il video è pronto e gira in silenzio nell'ombra. Attiviamo il click di sblocco
+    const gate = document.getElementById('audio-gate');
+    const superficies = document.getElementById('superfici');
+
+    gate.addEventListener('click', () => {
+      // Scompare il velo nero
+      gate.style.opacity = '0';
+      setTimeout(() => { gate.style.display = 'none'; }, 1500);
+
+      // AZIONE CRUCIALE: Attiva l'audio al massimo volume e riavvia l'opera dall'inizio
+      player.unMute();
+      player.setVolume(100);
+      player.seekTo(0);
+      player.playVideo();
+
+      // Comparsa del menu dopo 3 secondi nella banda nera
+      setTimeout(() => { 
+        superfici.classList.add('visible'); 
+      }, 6000);
+    });
+  }
 </script>
 </body>
 </html>
