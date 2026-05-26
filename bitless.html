@@ -15,7 +15,7 @@
   "description": "Music video for Bitless by CONROI. Cinematic audio format 1:2.35. Master audio execution.",
   "thumbnailUrl": "https://con-roi.com",
   "uploadDate": "2026-05-25",
-  "embedUrl": "https://con-roi.com/bitless",
+  "embedUrl": "https://con-roi.com",
   "duration": "PT6M00S", 
   "isrcCode": "ITYDF2600002",
   "actor": {
@@ -47,12 +47,16 @@
     background: #000;
   }
   
-  /* Il lettore video nativo si adatta al display occupando lo spazio corretto senza crop */
-  #video-wrap video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; 
+  /* FORMATO CINEMATOGRAFICO REALE 1:2.35 — SENZA BANDE LATERALI */
+  #main-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 42.55vw; 
+    transform: translate(-50%, -50%);
     display: block;
+    object-fit: contain;
   }
   
   /* VELO DI INGRESSO (GATE AUDIO) */
@@ -112,6 +116,11 @@
   @media (max-width: 480px) {
     #superfici { top: 15px; }
     #superfici a { margin: 3px 6px; }
+    #main-video {
+      width: 100vw !important;
+      height: 42.55vw !important;
+      transform: translate(-50%, -50%) !important;
+    }
   }
 </style>
 </head>
@@ -122,10 +131,13 @@
 </div>
 
 <div id="video-wrap">
-  <!-- Lettore nativo HTML5 collegato al file video da 260 MB su Cloudflare R2 -->
-  <video id="my-video" playsinline loop>
-   <source src="https://con-roi.com" type="video/mp4">
-    Il tuo browser non supporta i video.
+  <!-- URL CERTIFICATO SUL VOSTRO SOTTODOMINIO MEDIA -->
+  <video 
+    id="main-video" 
+    src="https://con-roi.com"
+    preload="auto"
+    playsinline
+    webkit-playsinline>
   </video>
 </div>
 
@@ -140,18 +152,23 @@
 
 <script>
   const gate = document.getElementById('audio-gate');
-  const video = document.getElementById('my-video');
   const superfici = document.getElementById('superfici');
+  const video = document.getElementById('main-video');
+
+  // Inizializza il file video in background
+  video.load();
 
   gate.addEventListener('click', () => {
-    // 1. Svincolato: Il velo nero si toglie immediatamente al tocco senza aspettare il server
+    // Avvia lo streaming sicuro dal sottodominio proprietario
+    video.play().catch(error => {
+      console.log("Riproduzione intercettata:", error);
+    });
+
+    // Dissolve il velo d'ingresso
     gate.style.opacity = '0';
     setTimeout(() => { gate.style.display = 'none'; }, 1500);
 
-    // 2. Avvia la riproduzione nativa del file mp4 su Cloudflare R2
-    video.play();
-
-    // 3. Il menu compare dopo 3 secondi esatti
+    // Mostra il menu dopo 3 secondi
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
