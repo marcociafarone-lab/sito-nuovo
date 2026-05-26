@@ -46,22 +46,20 @@
     z-index: 1;
     background: #000;
     overflow: hidden;
-    pointer-events: none; /* Impedisce di cliccare sul video e far apparire i controlli */
+    pointer-events: none;
   }
   
-  /* L'IFRAME MOSTRA IL FORMATO CORRETTO MA NASCONDE I LOGHI AI BORDI */
   #video-wrap iframe {
     position: absolute;
     top: 50%;
     left: 50%;
     width: 100vw;
     height: 56.25vw;
-    transform: translate(-50%, -50%) scale(1.08); /* Ingrandimento minimo mirato solo per spingere i controlli fuori dal visibile */
+    transform: translate(-50%, -50%) scale(1.08);
     border: none;
     display: block;
   }
   
-  /* VELO DI INGRESSO (GATE AUDIO) */
   #audio-gate {
     position: fixed;
     inset: 0;
@@ -86,7 +84,6 @@
     user-select: none;
   }
 
-  /* MENU NELLA BANDA NERA SUPERIORE */
   #superfici {
     position: fixed;
     top: 24px; 
@@ -121,7 +118,7 @@
     #video-wrap iframe {
       width: 100vw !important;
       height: 56.25vw !important;
-      transform: translate(-50%, -50%) scale(1.12) !important; /* Ottimizzato per display stretti */
+      transform: translate(-50%, -50%) scale(1.12) !important;
     }
   }
 </style>
@@ -133,7 +130,6 @@
 </div>
 
 <div id="video-wrap">
-  <!-- L'iFrame rinasce puro con i comandi di riproduzione audio e loop integrati direttamente nell'URL -->
   <iframe
     id="yt-player"
     src="https://youtube.com"
@@ -157,16 +153,13 @@
   const iframe = document.getElementById('yt-player');
 
   gate.addEventListener('click', () => {
-    // 1. Il velo nero si dissolve al tocco
     gate.style.opacity = '0';
     setTimeout(() => { gate.style.display = 'none'; }, 1500);
 
-    // 2. Comanda l'avvio del video con l'audio attivo tramite un messaggio post diretto a YouTube
     iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
     iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
     iframe.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', '*');
 
-    // 3. Il menu compare dopo 3 secondi
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
