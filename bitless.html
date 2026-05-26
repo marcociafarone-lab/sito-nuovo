@@ -47,16 +47,16 @@
     background: #000;
   }
   
-  /* L'IFRAME MANTIENE IL TUO FORMATO 1:2.35 INTERO SENZA CROP */
-  #video-wrap iframe {
+  /* FORMATO CINEMATOGRAFICO REALE 1:2.35 — SENZA BANDE LATERALI */
+  #main-video {
     position: absolute;
     top: 50%;
     left: 50%;
     width: 100vw;
-    height: 56.25vw;
+    height: 42.55vw; 
     transform: translate(-50%, -50%);
-    border: none;
     display: block;
+    object-fit: contain;
   }
   
   /* VELO DI INGRESSO (GATE AUDIO) */
@@ -116,9 +116,9 @@
   @media (max-width: 480px) {
     #superfici { top: 15px; }
     #superfici a { margin: 3px 6px; }
-    #video-wrap iframe {
+    #main-video {
       width: 100vw !important;
-      height: 56.25vw !important;
+      height: 42.55vw !important;
       transform: translate(-50%, -50%) !important;
     }
   }
@@ -131,13 +131,14 @@
 </div>
 
 <div id="video-wrap">
-  <!-- URL di YouTube semplificato al massimo, pulito dai codici che generavano il blocco 1014 -->
-  <iframe
-    id="yt-player"
-    src="https://youtube.com"
-    allow="autoplay; fullscreen"
-    allowfullscreen>
-  </iframe>
+  <!-- URL diretto e pulito al file video su Cloudflare R2 -->
+  <video 
+    id="main-video" 
+    src="https://pub-953551c297314ab9b61e36f7b7d22ac8.r2.dev/video_web.mp4"
+    preload="auto"
+    playsinline
+    webkit-playsinline>
+  </video>
 </div>
 
 <div id="superfici">
@@ -152,13 +153,200 @@
 <script>
   const gate = document.getElementById('audio-gate');
   const superfici = document.getElementById('superfici');
+  const video = document.getElementById('main-video');
+
+  // Avvia l'inizializzazione del video in background
+  video.load();
 
   gate.addEventListener('click', () => {
-    // Il velo si dissolve rivelando l'iFrame stabile
+    // Sblocca la riproduzione nativa immediata al click
+    video.play().catch(error => {
+      console.log("Riproduzione intercettata:", error);
+    });
+
+    // Il velo nero si dissolve rivelando l'opera
     gate.style.opacity = '0';
     setTimeout(() => { gate.style.display = 'none'; }, 1500);
 
-    // Il menu compare dopo 3 secondi nella banda nera
+    // Il menu compare dopo 3 secondi netti nella banda nera superiore
+    setTimeout(() => { 
+      superfici.classList.add('visible'); 
+    }, 3000);
+  });
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+ <link rel="icon" type="image/png" href="/logo_2.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONROI — bitless</title>
+
+<!-- DATI STRUTTURATI CON ISRC PER GOOGLE -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "CONROI — bitless (Official Video)",
+  "description": "Music video for Bitless by CONROI. Cinematic audio format 1:2.35. Master audio execution.",
+  "thumbnailUrl": "https://con-roi.com",
+  "uploadDate": "2026-05-25",
+  "embedUrl": "https://con-roi.com",
+  "duration": "PT6M00S", 
+  "isrcCode": "ITYDF2600002",
+  "actor": {
+    "@type": "MusicGroup",
+    "name": "CONROI",
+    "url": "https://con-roi.com"
+  },
+  "recordingOf": {
+    "@type": "MusicRecording",
+    "name": "Bitless"
+  }
+}
+</script>
+
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html, body {
+    background: #000;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  #video-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: #000;
+  }
+  
+  /* FORMATO CINEMATOGRAFICO REALE 1:2.35 — SENZA BANDE LATERALI */
+  #main-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 42.55vw; 
+    transform: translate(-50%, -50%);
+    display: block;
+    object-fit: contain;
+  }
+  
+  /* VELO DI INGRESSO (GATE AUDIO) */
+  #audio-gate {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 1.5s ease;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  
+  #audio-gate-text {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    line-height: 1.6;
+    padding: 0 20px;
+    user-select: none;
+  }
+
+  /* MENU NELLA BANDA NERA SUPERIORE */
+  #superfici {
+    position: fixed;
+    top: 24px; 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0);
+    line-height: 1.5;
+    text-align: center;
+    pointer-events: all;
+    transition: color 1.2s;
+    width: 90%;
+    max-width: 600px;
+  }
+
+  #superfici a {
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+    margin: 4px 10px;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  #superfici a:hover { color: rgba(255,255,255,0.7) !important; }
+  #superfici.visible { color: rgba(255,255,255,0.35); }
+
+  @media (max-width: 480px) {
+    #superfici { top: 15px; }
+    #superfici a { margin: 3px 6px; }
+    #main-video {
+      width: 100vw !important;
+      height: 42.55vw !important;
+      transform: translate(-50%, -50%) !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="audio-gate">
+  <div id="audio-gate-text">[ cinematic audio — headphones recommended ]</div>
+</div>
+
+<div id="video-wrap">
+  <!-- URL diretto e pulito al file video su Cloudflare R2 -->
+  <video 
+    id="main-video" 
+    src="https://pub-953551c297314ab9b61e36f7b7d22ac8.r2.dev/video_web.mp4"
+    preload="auto"
+    playsinline
+    webkit-playsinline>
+  </video>
+</div>
+
+<div id="superfici">
+  <a href="/dieci">10"</a>
+  <a href="/blues-rosa">blues rosa</a>
+  <a href="/conroi">CONROI</a>
+  <a href="/matrice">matrice</a>
+  <a href="/che-altro">che altro</a>
+  <a href="/surfaces">surfaces</a>
+</div>
+
+<script>
+  const gate = document.getElementById('audio-gate');
+  const superfici = document.getElementById('superfici');
+  const video = document.getElementById('main-video');
+
+  // Avvia l'inizializzazione del video in background
+  video.load();
+
+  gate.addEventListener('click', () => {
+    // Sblocca la riproduzione nativa immediata al click
+    video.play().catch(error => {
+      console.log("Riproduzione intercettata:", error);
+    });
+
+    // Il velo nero si dissolve rivelando l'opera
+    gate.style.opacity = '0';
+    setTimeout(() => { gate.style.display = 'none'; }, 1500);
+
+    // Il menu compare dopo 3 secondi netti nella banda nera superiore
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
