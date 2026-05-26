@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CONROI — bitless</title>
 
-<!-- DATI STRUTTURATI CON ISRC PER GOOGLE -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -48,20 +47,24 @@
     pointer-events: none;
   }
   
-  /* Adatta l'iframe occultando le grafiche di YouTube fuori dallo schermo */
   #video-wrap iframe {
     position: absolute;
     top: 50%;
     left: 50%;
     width: 100vw;
     height: 56.25vw;
-    min-height: 100vh;
-    min-width: 177.77vh;
-    transform: translate(-50%, -50%) scale(1.15);
+    transform: translate(-50%, -50%);
     border: none;
+    display: block;
+  }
+
+  @media (max-width: 700px) and (orientation: portrait) {
+    #video-wrap iframe {
+      width: 100vw !important;
+      height: 56.25vw !important;
+    }
   }
   
-  /* VELO DI INGRESSO (GATE AUDIO) */
   #audio-gate {
     position: fixed;
     inset: 0;
@@ -86,7 +89,6 @@
     user-select: none;
   }
 
-  /* MENU NELLA BANDA NERA SUPERIORE */
   #superfici {
     position: fixed;
     top: 24px; 
@@ -141,10 +143,9 @@
 </div>
 
 <script>
-  // 1. Carica le API con l'indirizzo esatto e completo (CORRETTO)
   var tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
-  var firstScriptTag = document.getElementsByTagName('script')[0]; // Inserito l'indice corretto
+  var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
   var player;
@@ -180,13 +181,11 @@
   const superfici = document.getElementById('superfici');
 
   gate.addEventListener('click', () => {
-    // Il velo scompare al tocco
     gate.style.opacity = '0';
     setTimeout(() => { 
       gate.style.display = 'none'; 
     }, 1500);
 
-    // Se l'API è pronta, attiva l'audio e avvia lo streaming
     if (isPlayerReady && player) {
       player.unMute();
       player.setVolume(100);
@@ -194,7 +193,6 @@
       player.playVideo();
     }
 
-    // Comparsa dei link impostata a 3 secondi esatti (CORRETTO)
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
