@@ -143,7 +143,7 @@
 </div>
 
 <script>
-  // 1. Carica le API ufficiali di YouTube in background
+  // 1. Carica le API ufficiali di YouTube in background (CORRETTO)
   var tag = document.createElement('script');
   tag.src = "https://youtube.com";
   var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -152,11 +152,10 @@
   var player;
   function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
-      // SOSTITUISCI QUESTA STRINGA CON L'ID DEL TUO VIDEO DI YOUTUBE
       videoId: 'vjh_DcWayGQ', 
       playerVars: {
         'autoplay': 1,
-        'mute': 1, // Parte muto dietro il velo per aggirare i blocchi dei browser
+        'mute': 1, 
         'controls': 0,
         'rel': 0,
         'showinfo': 0,
@@ -173,25 +172,24 @@
   }
 
   function onPlayerReady(event) {
-    // Il video è pronto e gira in silenzio nell'ombra. Attiviamo il click di sblocco
     const gate = document.getElementById('audio-gate');
-    const superficies = document.getElementById('superfici');
+    const superfici = document.getElementById('superfici');
 
     gate.addEventListener('click', () => {
       // Scompare il velo nero
       gate.style.opacity = '0';
       setTimeout(() => { gate.style.display = 'none'; }, 1500);
 
-      // AZIONE CRUCIALE: Attiva l'audio al massimo volume e riavvia l'opera dall'inizio
+      // Attiva l'audio al massimo volume e riavvia l'opera dall'inizio
       player.unMute();
       player.setVolume(100);
       player.seekTo(0);
       player.playVideo();
 
-      // Comparsa del menu dopo 3 secondi nella banda nera
+      // Comparsa del menu impostata a 3 secondi esatti (CORRETTO)
       setTimeout(() => { 
         superfici.classList.add('visible'); 
-      }, 6000);
+      }, 3000);
     });
   }
 </script>
