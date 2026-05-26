@@ -30,12 +30,14 @@
 </div>
 
 <div id="video-wrap">
+  <!-- L'ATTRIBUTO crossorigin SBLOCCA LA CORS POLICY DI CLOUDFLARE -->
   <video 
     id="main-video" 
     src="https://media.con-roi.com/video_web.mp4"
     preload="auto"
     playsinline
-    webkit-playsinline>
+    webkit-playsinline
+    crossorigin="anonymous">
   </video>
 </div>
 
