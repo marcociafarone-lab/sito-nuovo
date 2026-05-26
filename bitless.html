@@ -45,13 +45,14 @@
     position: fixed;
     inset: 0;
     z-index: 1;
+    background: #000;
   }
   
-  /* Tag video nativo a tutto schermo, mantiene le proporzioni e riempie lo schermo creando le bande nere */
-  #video-wrap video {
+  /* Adatta l'iframe di Google Drive a tutto schermo occultando i bordi */
+  #video-wrap iframe {
     width: 100%;
     height: 100%;
-    object-fit: cover; 
+    border: none;
     display: block;
   }
   
@@ -66,7 +67,7 @@
     justify-content: center;
     cursor: pointer;
     transition: opacity 1.5s ease;
-    -webkit-tap-highlight-color: transparent !important; /* Blocca il flash celeste al tocco */
+    -webkit-tap-highlight-color: transparent !important;
   }
   
   #audio-gate-text {
@@ -100,7 +101,7 @@
   }
 
   #superfici a {
-    display: inline-block; /* Permette al menu di incolonnarsi in modo pulito su mobile */
+    display: inline-block;
     color: inherit;
     text-decoration: none;
     margin: 4px 10px;
@@ -109,30 +110,31 @@
   #superfici a:hover { color: rgba(255,255,255,0.7) !important; }
   #superfici.visible { color: rgba(255,255,255,0.35); }
 
-  /* COMPATTAZIONE DEL MENU SU SCHERMI STRETTI (PORTRAIT MOBILE) */
   @media (max-width: 480px) {
     #superfici {
-      top: 15px; /* Alza millimetricamente i link per tenerli dentro la banda nera stretta dello smartphone */
+      top: 15px;
     }
     #superfici a {
-      margin: 3px 6px; /* Stringe lo spazio di tocco per evitare accavallamenti o tagli ai bordi */
+      margin: 3px 6px;
     }
   }
 </style>
 </head>
 <body>
 
-<!-- Velo d'ingresso minimale che azzera i blocchi audio dei browser mobile -->
+<!-- Velo d'ingresso minimale con l'alert per le cuffie -->
 <div id="audio-gate">
   <div id="audio-gate-text">[ cinematic audio — headphones recommended ]</div>
 </div>
 
 <div id="video-wrap">
-  <!-- Lettore nativo HTML5 con streaming diretto e puro da Google Drive -->
-  <video id="my-video" playsinline>
-    <source src="https://google.com" type="video/mp4">
-    Il tuo browser non supporta i video.
-  </video>
+  <!-- Sostituito con l'iframe ufficiale di streaming autorizzato da Google Drive -->
+  <iframe 
+    id="drive-video"
+    src="https://google.com" 
+    allow="autoplay; fullscreen" 
+    allowfullscreen>
+  </iframe>
 </div>
 
 <div id="superfici">
@@ -146,18 +148,14 @@
 
 <script>
   const gate = document.getElementById('audio-gate');
-  const video = document.getElementById('my-video');
   const superfici = document.getElementById('superfici');
 
   gate.addEventListener('click', () => {
-    // 1. Scompare il velo nero all'interazione dell'utente
+    // Scompare il velo nero all'interazione dell'utente
     gate.style.opacity = '0';
     setTimeout(() => { gate.style.display = 'none'; }, 1500);
 
-    // 2. Il video master parte con l'audio sbloccato al massimo della fedeltà
-    video.play();
-
-    // 3. Il timer fa apparire i link in dissolvenza 6 secondi dopo l'ingresso
+    // Il timer fa apparire i link del menu in dissolvenza 6 secondi dopo l'ingresso
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 6000);
