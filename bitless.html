@@ -45,10 +45,10 @@
     inset: 0;
     z-index: 1;
     background: #000;
-    pointer-events: none; /* Impedisce all'utente di cliccare sul video e vedere i tasti di YouTube */
+    pointer-events: none; /* Impedisce tocchi involontari sul video di YouTube */
   }
   
-  /* Ingrandisce leggermente l'iframe per occultare i loghi di YouTube fuori dallo schermo */
+  /* Adatta l'iframe occultando le grafiche di YouTube fuori dallo schermo */
   #video-wrap iframe {
     position: absolute;
     top: 50%;
@@ -57,7 +57,7 @@
     height: 56.25vw;
     min-height: 100vh;
     min-width: 177.77vh;
-    transform: translate(-50%, -50%) scale(1.1);
+    transform: translate(-50%, -50%) scale(1.15);
     border: none;
   }
   
@@ -71,7 +71,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: opacity 1.5s ease;
+    transition: opacity 1.5s ease, visibility 1.5s ease;
     -webkit-tap-highlight-color: transparent !important;
   }
   
@@ -143,13 +143,15 @@
 </div>
 
 <script>
-  // 1. Carica le API ufficiali di YouTube in background (CORRETTO)
+  // 1. Carica le API di YouTube indicando la posizione esatta con lo zero finale [0]
   var tag = document.createElement('script');
   tag.src = "https://youtube.com";
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
   var player;
+  var isPlayerReady = false;
+
   function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
       videoId: 'vjh_DcWayGQ', 
@@ -163,7 +165,8 @@
         'modestbranding': 1,
         'iv_load_policy': 3,
         'cc_load_policy': 0,
-        'autohide': 1
+        'autohide': 1,
+        'playlist': 'vjh_DcWayGQ' /* Forza il loop nativo di YouTube */
       },
       events: {
         'onReady': onPlayerReady
@@ -172,26 +175,33 @@
   }
 
   function onPlayerReady(event) {
-    const gate = document.getElementById('audio-gate');
-    const superfici = document.getElementById('superfici');
+    isPlayerReady = true;
+  }
 
-    gate.addEventListener('click', () => {
-      // Scompare il velo nero
-      gate.style.opacity = '0';
-      setTimeout(() => { gate.style.display = 'none'; }, 1500);
+  // Gestione dell'interazione sul velo nero di ingresso
+  const gate = document.getElementById('audio-gate');
+  const superfici = document.getElementById('superfici');
 
-      // Attiva l'audio al massimo volume e riavvia l'opera dall'inizio
+  gate.addEventListener('click', () => {
+    // Il velo scompare immediatamente al tocco senza dipendere dallo stato di YouTube
+    gate.style.opacity = '0';
+    setTimeout(() => { 
+      gate.style.display = 'none'; 
+    }, 1500);
+
+    // Se il lettore di YouTube è caricato, sblocca l'audio e avvia l'opera
+    if (isPlayerReady && player) {
       player.unMute();
       player.setVolume(100);
       player.seekTo(0);
       player.playVideo();
+    }
 
-      // Comparsa del menu impostata a 3 secondi esatti (CORRETTO)
-      setTimeout(() => { 
-        superfici.classList.add('visible'); 
-      }, 3000);
-    });
-  }
+    // Comparsa controllata dei link nella banda nera dopo 3 secondi esatti
+    setTimeout(() => { 
+      superfici.classList.add('visible'); 
+    }, 3000);
+  });
 </script>
 </body>
 </html>
