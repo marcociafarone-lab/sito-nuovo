@@ -45,9 +45,9 @@
     inset: 0;
     z-index: 1;
     background: #000;
-    pointer-events: none;
   }
   
+  /* Adatta l'iframe occultando le grafiche di YouTube fuori dallo schermo */
   #video-wrap iframe {
     position: absolute;
     top: 50%;
@@ -60,6 +60,7 @@
     border: none;
   }
   
+  /* VELO DI INGRESSO (GATE AUDIO) */
   #audio-gate {
     position: fixed;
     inset: 0;
@@ -84,6 +85,7 @@
     user-select: none;
   }
 
+  /* MENU NELLA BANDA NERA SUPERIORE */
   #superfici {
     position: fixed;
     top: 24px; 
@@ -138,7 +140,7 @@
 </div>
 
 <script>
-  // 1. Iniezione dinamica corretta con la selezione esatta dell'indice [0]
+  // 1. Iniezione dinamica con selezione esatta dell'indice [0] per evitare il crash
   var tag = document.createElement('script');
   tag.src = "https://youtube.com";
   var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -177,11 +179,13 @@
   const superfici = document.getElementById('superfici');
 
   gate.addEventListener('click', () => {
+    // Il velo scompare al tocco
     gate.style.opacity = '0';
     setTimeout(() => { 
       gate.style.display = 'none'; 
     }, 1500);
 
+    // Se l'API è pronta, attiva l'audio e avvia lo streaming
     if (isPlayerReady && player) {
       player.unMute();
       player.setVolume(100);
@@ -189,6 +193,7 @@
       player.playVideo();
     }
 
+    // Comparsa controllata dei link nella banda nera dopo 3 secondi
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
