@@ -309,13 +309,10 @@
 </div>
 
 <div id="video-wrap">
-  <!-- URL diretto e pulito al file video su Cloudflare R2 -->
-  <video 
-    id="main-video" 
-    src="https://pub-953551c297314ab9b61e36f7b7d22ac8.r2.dev/video_web.mp4"
-    preload="auto"
-    playsinline
-    webkit-playsinline>
+  <!-- Il tuo video master da 260 MB su Cloudflare R2, senza loghi o controlli -->
+  <video id="my-video" playsinline loop>
+    <source src="https://r2.dev" type="video/mp4">
+    Il tuo browser non supporta i video.
   </video>
 </div>
 
@@ -330,23 +327,62 @@
 
 <script>
   const gate = document.getElementById('audio-gate');
+  const video = document.getElementById('my-video');
   const superfici = document.getElementById('superfici');
-  const video = document.getElementById('main-video');
-
-  // Avvia l'inizializzazione del video in background
-  video.load();
 
   gate.addEventListener('click', () => {
-    // Sblocca la riproduzione nativa immediata al click
-    video.play().catch(error => {
-      console.log("Riproduzione intercettata:", error);
-    });
-
-    // Il velo nero si dissolve rivelando l'opera
+    // 1. Il velo nero si dissolve al tocco
     gate.style.opacity = '0';
     setTimeout(() => { gate.style.display = 'none'; }, 1500);
 
-    // Il menu compare dopo 3 secondi netti nella banda nera superiore
+    // 2. Il video parte all'istante con l'audio al 100% senza blocchi
+    video.play();
+
+    // 3. Il menu compare dopo 3 secondi nella banda nera
+    setTimeout(() => { 
+      superfici.classList.add('visible'); 
+    }, 3000);
+  });
+</script>
+</body>
+</html>
+<body>
+
+<div id="audio-gate">
+  <div id="audio-gate-text">[ cinematic audio — headphones recommended ]</div>
+</div>
+
+<div id="video-wrap">
+  <!-- Il tuo video master da 260 MB su Cloudflare R2, senza loghi o controlli -->
+  <video id="my-video" playsinline loop>
+    <source src="https://r2.dev" type="video/mp4">
+    Il tuo browser non supporta i video.
+  </video>
+</div>
+
+<div id="superfici">
+  <a href="/dieci">10"</a>
+  <a href="/blues-rosa">blues rosa</a>
+  <a href="/conroi">CONROI</a>
+  <a href="/matrice">matrice</a>
+  <a href="/che-altro">che altro</a>
+  <a href="/surfaces">surfaces</a>
+</div>
+
+<script>
+  const gate = document.getElementById('audio-gate');
+  const video = document.getElementById('my-video');
+  const superfici = document.getElementById('superfici');
+
+  gate.addEventListener('click', () => {
+    // 1. Il velo nero si dissolve al tocco
+    gate.style.opacity = '0';
+    setTimeout(() => { gate.style.display = 'none'; }, 1500);
+
+    // 2. Il video parte all'istante con l'audio al 100% senza blocchi
+    video.play();
+
+    // 3. Il menu compare dopo 3 secondi nella banda nera
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
