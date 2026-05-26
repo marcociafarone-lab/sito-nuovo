@@ -45,10 +45,9 @@
     inset: 0;
     z-index: 1;
     background: #000;
-    pointer-events: none; /* Impedisce tocchi involontari sul video di YouTube */
+    pointer-events: none;
   }
   
-  /* Adatta l'iframe occultando le grafiche di YouTube fuori dallo schermo */
   #video-wrap iframe {
     position: absolute;
     top: 50%;
@@ -61,7 +60,6 @@
     border: none;
   }
   
-  /* VELO DI INGRESSO (GATE AUDIO) */
   #audio-gate {
     position: fixed;
     inset: 0;
@@ -71,7 +69,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: opacity 1.5s ease, visibility 1.5s ease;
+    transition: opacity 1.5s ease;
     -webkit-tap-highlight-color: transparent !important;
   }
   
@@ -86,7 +84,6 @@
     user-select: none;
   }
 
-  /* MENU NELLA BANDA NERA SUPERIORE */
   #superfici {
     position: fixed;
     top: 24px; 
@@ -123,13 +120,11 @@
 </head>
 <body>
 
-<!-- L'avviso per le cuffie che sblocca il suono -->
 <div id="audio-gate">
   <div id="audio-gate-text">[ cinematic audio — headphones recommended ]</div>
 </div>
 
 <div id="video-wrap">
-  <!-- Il tag in cui JavaScript inietterà il player di YouTube -->
   <div id="player"></div>
 </div>
 
@@ -143,7 +138,7 @@
 </div>
 
 <script>
-  // 1. Carica le API di YouTube indicando la posizione esatta con lo zero finale [0]
+  // 1. Iniezione dinamica corretta con la selezione esatta dell'indice [0]
   var tag = document.createElement('script');
   tag.src = "https://youtube.com";
   var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -166,7 +161,7 @@
         'iv_load_policy': 3,
         'cc_load_policy': 0,
         'autohide': 1,
-        'playlist': 'vjh_DcWayGQ' /* Forza il loop nativo di YouTube */
+        'playlist': 'vjh_DcWayGQ'
       },
       events: {
         'onReady': onPlayerReady
@@ -178,18 +173,15 @@
     isPlayerReady = true;
   }
 
-  // Gestione dell'interazione sul velo nero di ingresso
   const gate = document.getElementById('audio-gate');
   const superfici = document.getElementById('superfici');
 
   gate.addEventListener('click', () => {
-    // Il velo scompare immediatamente al tocco senza dipendere dallo stato di YouTube
     gate.style.opacity = '0';
     setTimeout(() => { 
       gate.style.display = 'none'; 
     }, 1500);
 
-    // Se il lettore di YouTube è caricato, sblocca l'audio e avvia l'opera
     if (isPlayerReady && player) {
       player.unMute();
       player.setVolume(100);
@@ -197,7 +189,6 @@
       player.playVideo();
     }
 
-    // Comparsa controllata dei link nella banda nera dopo 3 secondi esatti
     setTimeout(() => { 
       superfici.classList.add('visible'); 
     }, 3000);
